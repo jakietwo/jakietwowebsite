@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <a-rowr>
+    <a-row>
       <a-col :offset="1" :xs="10" :sm="4" class="first-col">
         <img
           src="./../assets/image/logo.jpg"
@@ -18,26 +18,28 @@
           @search="onSearch"
         />
       </a-col>
-      <a-col :sm="11" :xs="4" class="third-col">
+      <a-col :sm="10" :xs="4" class="third-col">
         <a-menu v-model="current" mode="horizontal" class="nav-header">
-          <a-menu-item key="首页"> <a-icon type="mail" />首页 </a-menu-item>
-          <a-menu-item key="分类"> <a-icon type="mail" />分类 </a-menu-item>
-          <a-menu-item key="关于"> <a-icon type="mail" />关于 </a-menu-item>
-          <a-menu-item key="mail"> <a-icon type="mail" />mail </a-menu-item>
+          <a-menu-item key="myhome"><a-icon type="html5" />首页 </a-menu-item>
+          <a-menu-item key="mycategory">
+            <a-icon type="tags" />分类
+          </a-menu-item>
+          <a-menu-item key="myabout"> <a-icon type="man" />关于 </a-menu-item>
+          <a-menu-item key="my"> <a-icon type="mail" />mail </a-menu-item>
         </a-menu>
         <a-button class="login" type="primary">登录</a-button>
         <a-button class="register">注册</a-button>
       </a-col>
-    </a-rowr>
+    </a-row>
   </div>
 </template>
 <script>
 export default {
-  name: "header",
+  name: "myheader",
   components: {},
   data() {
     return {
-      current: "首页"
+      current: ["myhome"]
     };
   },
   watch: {},

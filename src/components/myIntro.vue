@@ -37,7 +37,7 @@
 <script>
 import myTags from "@/config/mytags";
 export default {
-  name: "Login",
+  name: "myIntro",
   components: {},
   data() {
     return {

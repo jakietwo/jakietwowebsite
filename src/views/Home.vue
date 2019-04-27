@@ -1,9 +1,10 @@
 <template>
   <div class="home">
     <navheader></navheader>
-    <my-intro></my-intro>
-    <div class="cmp-wrapper"></div>
-    <component :is="currentCmp"></component>
+    <div class="cmp-wrapper">
+      <my-intro></my-intro>
+      <component :is="currentCmp" class="diff-cmp"></component>
+    </div>
   </div>
 </template>
 
@@ -11,18 +12,20 @@
 // @ is an alias to /src
 import navheader from "@/components/header";
 import myIntro from "@/components/myIntro";
+import myhome from "@/components/myhome";
 export default {
   name: "home",
   components: {
     navheader,
-    myIntro
+    myIntro,
+    myhome
   },
   data() {
     return {};
   },
   computed: {
     currentCmp() {
-      return this.$store.state.currentCmp;
+      return this.$store.state.currentCmp[0];
     }
   },
   create() {},
@@ -47,5 +50,10 @@ export default {
   .footer
     height 50px
   .cmp-wrapper
-    margin-left 300px
+    width 100%
+    display flex
+    flex-direction row
+    .diff-cmp
+      flex 1
+      padding 20px
 </style>
