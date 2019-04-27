@@ -1,30 +1,29 @@
 <template>
   <div class="home">
-    <a-layout>
-      <a-layout-header class="header">
-        <navheader></navheader>
-      </a-layout-header>
-      <a-layout class="main">
-        <a-layout-sider class="main-side" style="width: 400px;"
-          >Sider</a-layout-sider
-        >
-        <a-layout-content class="main-content">Content</a-layout-content>
-      </a-layout>
-      <a-layout-footer class="footer">Footer</a-layout-footer>
-    </a-layout>
+    <navheader></navheader>
+    <my-intro></my-intro>
+    <div class="cmp-wrapper"></div>
+    <component :is="currentCmp"></component>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import navheader from "@/components/header";
+import myIntro from "@/components/myIntro";
 export default {
   name: "home",
   components: {
-    navheader
+    navheader,
+    myIntro
   },
   data() {
     return {};
+  },
+  computed: {
+    currentCmp() {
+      return this.$store.state.currentCmp;
+    }
   },
   create() {},
   mounted() {}
@@ -47,4 +46,6 @@ export default {
       width 500px
   .footer
     height 50px
+  .cmp-wrapper
+    margin-left 300px
 </style>

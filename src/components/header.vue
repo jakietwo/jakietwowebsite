@@ -1,18 +1,34 @@
 <template>
   <div class="header">
-    <img src="./../assets/image/logo.jpg" width="50" height="50" alt="logo" />
-    <h1 class="title">JAKIETWO的博客</h1>
-    <a-input-search
-      class="search-input"
-      placeholder="根据文章搜索"
-      @search="onSearch"
-    />
-    <a-menu v-model="current" mode="horizontal">
-      <a-menu-item key="首页"> <a-icon type="mail" />首页 </a-menu-item>
-      <a-menu-item key="分类"> <a-icon type="mail" />分类 </a-menu-item>
-      <a-menu-item key="关于"> <a-icon type="mail" />关于 </a-menu-item>
-      <a-menu-item key="mail"> <a-icon type="mail" />mail </a-menu-item>
-    </a-menu>
+    <a-rowr>
+      <a-col :offset="1" :xs="10" :sm="4" class="first-col">
+        <img
+          src="./../assets/image/logo.jpg"
+          width="50"
+          height="50"
+          alt="logo"
+        />
+        <span class="title">JAKIETWO</span>
+      </a-col>
+      <a-col :sm="8" :xs="10" style="text-align: center;" class="second-col">
+        <a-input-search
+          style="border: 1px solid transparent;"
+          class="search-input"
+          placeholder="根据文章搜索"
+          @search="onSearch"
+        />
+      </a-col>
+      <a-col :sm="11" :xs="4" class="third-col">
+        <a-menu v-model="current" mode="horizontal" class="nav-header">
+          <a-menu-item key="首页"> <a-icon type="mail" />首页 </a-menu-item>
+          <a-menu-item key="分类"> <a-icon type="mail" />分类 </a-menu-item>
+          <a-menu-item key="关于"> <a-icon type="mail" />关于 </a-menu-item>
+          <a-menu-item key="mail"> <a-icon type="mail" />mail </a-menu-item>
+        </a-menu>
+        <a-button class="login" type="primary">登录</a-button>
+        <a-button class="register">注册</a-button>
+      </a-col>
+    </a-rowr>
   </div>
 </template>
 <script>
@@ -21,7 +37,7 @@ export default {
   components: {},
   data() {
     return {
-      current: ""
+      current: "首页"
     };
   },
   watch: {},
@@ -35,21 +51,42 @@ export default {
 
 <style scoped lang="stylus">
 .header
-  display flex
-  justify-content flex-start
-  align-items center
   width 100vw
-  height 60px
-  line-height 60px
-  .title
-    margin-left 10px
-    height 60px
-    font-size 20px
+  box-shadow 0 0 10px rgba(7,17,27,.2)
+  .first-col
+    display flex
+    justify-content center
+    align-items center
+    text-align center
     line-height 60px
-  .search-input
-    width 40%
-    outline none
-    margin-left 20px
-    border-radius 20px
-    max-width 600px
+    height 60px
+    .title
+      font-size 18px
+      margin-left 5px
+  .second-col, .third-col
+    display flex
+    line-height 60px
+    height 60px
+    justify-content center
+    align-items center
+    .login
+      margin-right 10px
+    .search-input
+      height 40px
+      outline none
+      border none
+  .third-col
+    text-align right
+    .nav-header
+      height 60px
+      .login, .register
+        position relative
+        margin-left 5px
+        margin-bottom 12px
+</style>
+<style>
+.ant-menu-item {
+  height: 60px;
+  line-height: 60px;
+}
 </style>
