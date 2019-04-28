@@ -13,12 +13,16 @@
 import navheader from "@/components/header";
 import myIntro from "@/components/myIntro";
 import myhome from "@/components/myhome";
+import mycategory from "@/components/mycategory";
+import myabout from "@/components/myabout";
 export default {
   name: "home",
   components: {
     navheader,
     myIntro,
-    myhome
+    myhome,
+    mycategory,
+    myabout
   },
   data() {
     return {};

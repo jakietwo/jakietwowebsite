@@ -42,7 +42,11 @@ export default {
       current: ["myhome"]
     };
   },
-  watch: {},
+  watch: {
+    current(newval) {
+      this.$store.commit("setCurrentCmp", newval);
+    }
+  },
   created() {},
   mounted() {},
   methods: {

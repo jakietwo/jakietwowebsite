@@ -1,11 +1,9 @@
 <template>
-  <div class="mycategory">
-    我的分类
-  </div>
+  <div class="myabout">我的关于</div>
 </template>
 <script>
 export default {
-  name: "mycategory",
+  name: "myabout",
   components: {},
   data() {
     return {};

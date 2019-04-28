@@ -1,5 +1,5 @@
 <template>
-  <div class="myhome">123132</div>
+  <div class="myhome">我的主页</div>
 </template>
 <script>
 export default {
