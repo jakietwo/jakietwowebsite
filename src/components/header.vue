@@ -11,8 +11,8 @@
         <span class="title">JAKIETWO</span>
       </a-col>
       <a-col :sm="8" :xs="10" style="text-align: center;" class="second-col">
-        <a-input-search
-          style="border: 1px solid transparent;"
+        <a-input
+          style="border: 0px solid transparent; outline: none;"
           class="search-input"
           placeholder="根据文章搜索"
           @search="onSearch"
@@ -70,9 +70,11 @@ export default {
 
 <style scoped lang="stylus">
 .header
-  width 100vw
+  position fixed
+  z-index 10
+  width 90%
+  max-width 1900px
   box-shadow 0 0 10px rgba(7, 17, 27, .2)
-
   .first-col
     display flex
     justify-content center
@@ -97,9 +99,15 @@ export default {
 
     .search-input
       height 40px
+      width 450px
       outline none
       border none
-
+      &:focus
+        border none
+        outline none
+    .search-input:focus
+      border none
+      outline none
   .third-col
     text-align right
 

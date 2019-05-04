@@ -15,6 +15,11 @@ import myIntro from "@/components/myIntro";
 import myhome from "@/components/myhome";
 import mycategory from "@/components/mycategory";
 import myabout from "@/components/myabout";
+import { article } from "../api/article";
+import { tag } from "../api/tag";
+import { comment } from "../api/comment";
+import { reply } from "../api/reply";
+
 export default {
   name: "home",
   components: {
@@ -32,8 +37,23 @@ export default {
       return this.$store.state.currentCmp[0];
     }
   },
-  create() {},
-  mounted() {}
+  created() {
+    // 获取到所有数据
+    this._initAllData();
+  },
+  mounted() {},
+  methods: {
+    async _initAllData() {
+      let articles = await article.getAllArticle();
+      let comments = await comment.getAllComment();
+      let replys = await reply.getAllReply();
+      let tags = await tag.getAllTags();
+      this.$store.commit("saveArticles", articles);
+      this.$store.commit("saveComments", comments);
+      this.$store.commit("saveReplys", replys);
+      this.$store.commit("saveTags", tags);
+    }
+  }
 };
 </script>
 <style scoped lang="stylus">
@@ -54,10 +74,14 @@ export default {
   .footer
     height 50px
   .cmp-wrapper
-    width 100%
+    width 100vw
     display flex
     flex-direction row
     .diff-cmp
-      flex 1
-      padding 20px
+      position absolute
+      left 420px
+      top 70px
+      width 1000px
+      height 1600px
+      overflow-y auto
 </style>

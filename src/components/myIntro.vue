@@ -20,7 +20,7 @@
       <a-divider orientation="left">最新文章</a-divider>
       <ul class="newArticleList">
         <li class="article-item" v-for="(article, index) in 6" :key="index">
-          {{ article }}12313156465465165465456465748789477897123798
+          {{ article }}
         </li>
       </ul>
     </div>
@@ -55,6 +55,8 @@ export default {
 
 <style scoped lang="stylus">
 .myIntro
+  position fixed
+  top 60px
   display flex
   flex-direction column
   align-items center
