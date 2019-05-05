@@ -19,6 +19,7 @@ import { article } from "../api/article";
 import { tag } from "../api/tag";
 import { comment } from "../api/comment";
 import { reply } from "../api/reply";
+import { sortReplyByCommentId } from "../common/handleData";
 
 export default {
   name: "home",
@@ -52,6 +53,7 @@ export default {
       this.$store.commit("saveComments", comments);
       this.$store.commit("saveReplys", replys);
       this.$store.commit("saveTags", tags);
+      let sortReply = sortReplyByCommentId(replys);
     }
   }
 };
