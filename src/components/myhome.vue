@@ -14,7 +14,12 @@
           </a-divider>
           <div class="article-content">{{ article.content }}</div>
           <div class="article-footer">
-            <div class="comment"><a-icon type="message" /> 20</div>
+            <div class="comment">
+              <a-icon type="message" />
+              {{
+                (sortComment[article.id] && sortComment[article.id].length) || 0
+              }}
+            </div>
             <a-divider type="vertical" />
             <div class="tags">
               <a-icon type="tags" style="margin-right: 5px" />
@@ -23,7 +28,13 @@
             <a-divider type="vertical" />
             <div class="category">
               <a-icon type="folder" style="margin-right: 5px" />
-              <a-tag color="pink" class="tag">node</a-tag>
+              <a-tag
+                v-for="(tag, index) in sortCategory[article.id]"
+                v-bind:key="`class${index}`"
+                :color="`${tagColor[Math.floor(Math.random() * 10)]}`"
+                class="tag"
+                >{{ tag.name }}</a-tag
+              >
             </div>
           </div>
         </li>
@@ -41,6 +52,8 @@
 <script>
 import { article } from "../api/article";
 import { handleCreateTime } from "../common/handleTime";
+import { mapState } from "vuex";
+import { tagColor } from "../config/tagColor";
 
 export default {
   name: "myhome",
@@ -49,8 +62,15 @@ export default {
     return {
       articles: [],
       currentPage: 1,
-      total: 20
+      total: 20,
+      tagColor: tagColor
     };
+  },
+  computed: {
+    ...mapState({
+      sortComment: state => state.sortComment,
+      sortCategory: state => state.sortCategory
+    })
   },
   watch: {},
   created() {
@@ -76,7 +96,7 @@ export default {
   width 100%
   .articleItem
     width 90%
-    margin 10px auto 50px
+    margin 20px auto 50px
     height 320px
     border 1px solid rgba(0,0,0,.05)
     padding  20px 20px 10px

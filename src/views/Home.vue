@@ -19,7 +19,13 @@ import { article } from "../api/article";
 import { tag } from "../api/tag";
 import { comment } from "../api/comment";
 import { reply } from "../api/reply";
-import { sortReplyByCommentId } from "../common/handleData";
+import { category } from "../api/category";
+import {
+  sortReplyByCommentId,
+  orderByCreateTime,
+  sortCommentByArticleId,
+  sortCategoryByArticleId
+} from "../common/handleData";
 
 export default {
   name: "home",
@@ -49,11 +55,20 @@ export default {
       let comments = await comment.getAllComment();
       let replys = await reply.getAllReply();
       let tags = await tag.getAllTags();
+      let categorys = await category.listCategory();
       this.$store.commit("saveArticles", articles);
       this.$store.commit("saveComments", comments);
       this.$store.commit("saveReplys", replys);
       this.$store.commit("saveTags", tags);
+      this.$store.commit("saveCategorys", categorys);
       let sortReply = sortReplyByCommentId(replys);
+      sortReply = orderByCreateTime(sortReply);
+      let sortComment = sortCommentByArticleId(comments);
+      sortComment = orderByCreateTime(sortComment);
+      let sortCategory = sortCategoryByArticleId(categorys);
+      this.$store.commit("saveSortComment", sortComment);
+      this.$store.commit("saveSortReply", sortReply);
+      this.$store.commit("saveSortCategory", sortCategory);
     }
   }
 };
