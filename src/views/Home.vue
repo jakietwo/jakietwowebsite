@@ -3,7 +3,7 @@
     <navheader></navheader>
     <div class="cmp-wrapper">
       <my-intro></my-intro>
-      <component :is="currentCmp" class="diff-cmp"></component>
+      <router-view class="router-view" />
     </div>
   </div>
 </template>
@@ -12,9 +12,6 @@
 // @ is an alias to /src
 import navheader from "@/components/header";
 import myIntro from "@/components/myIntro";
-import myhome from "@/components/myhome";
-import mycategory from "@/components/mycategory";
-import myabout from "@/components/myabout";
 import { article } from "../api/article";
 import { tag } from "../api/tag";
 import { comment } from "../api/comment";
@@ -24,17 +21,15 @@ import {
   sortReplyByCommentId,
   orderByCreateTime,
   sortCommentByArticleId,
-  sortCategoryByArticleId
+  sortCategoryByArticleId,
+  sortTagByArticleId
 } from "../common/handleData";
 
 export default {
   name: "home",
   components: {
     navheader,
-    myIntro,
-    myhome,
-    mycategory,
-    myabout
+    myIntro
   },
   data() {
     return {};
@@ -65,7 +60,12 @@ export default {
       sortReply = orderByCreateTime(sortReply);
       let sortComment = sortCommentByArticleId(comments);
       sortComment = orderByCreateTime(sortComment);
-      let sortCategory = sortCategoryByArticleId(categorys);
+      let obj = sortCategoryByArticleId(categorys);
+      let sortCategory = obj.result;
+      let sortNameCategory = obj.nameResult;
+      let sortTag = sortTagByArticleId(tags);
+      this.$store.commit("saveSortNameCategory", sortNameCategory);
+      this.$store.commit("saveSortTag", sortTag);
       this.$store.commit("saveSortComment", sortComment);
       this.$store.commit("saveSortReply", sortReply);
       this.$store.commit("saveSortCategory", sortCategory);
@@ -94,11 +94,12 @@ export default {
     width 100vw
     display flex
     flex-direction row
-    .diff-cmp
+    .router-view
       position absolute
       left 420px
       top 70px
       width 1000px
-      height 1600px
+      min-height 600px
+      max-height 1600px
       overflow-y auto
 </style>

@@ -55,20 +55,48 @@ function sortCommentByArticleId(commentData) {
 }
 function sortCategoryByArticleId(categorysData) {
   let result = {};
+  let nameResult = {};
   categorysData.forEach(category => {
     let articleId = category.articleId;
+    let name = category.name;
     if (result[articleId]) {
       result[articleId].push(category);
     } else {
       result[articleId] = [];
       result[articleId].push(category);
     }
+    if (nameResult[name]) {
+      nameResult[name].push(category);
+    } else {
+      nameResult[name] = [];
+      nameResult[name].push(category);
+    }
+  });
+  return { result, nameResult };
+}
+
+/**
+ *
+ * @param tags
+ */
+function sortTagByArticleId(tags) {
+  let result = {};
+  tags.forEach(tag => {
+    let articleId = tag.articleId;
+    if (result[articleId]) {
+      result[articleId].push(tag);
+    } else {
+      result[articleId] = [];
+      result[articleId].push(tag);
+    }
   });
   return result;
 }
+function sortCategoryByName(category) {}
 export {
   sortReplyByCommentId,
   orderByCreateTime,
   sortCommentByArticleId,
-  sortCategoryByArticleId
+  sortCategoryByArticleId,
+  sortTagByArticleId
 };

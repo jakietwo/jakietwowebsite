@@ -13,7 +13,9 @@ export default new Vuex.Store({
     categorys: [],
     sortComment: [],
     sortReply: [],
-    sortCategory: []
+    sortCategory: [],
+    sortTag: [],
+    sortNameCategory: []
   },
   plugins: [createPersistedState()],
   mutations: {
@@ -43,6 +45,12 @@ export default new Vuex.Store({
     },
     saveSortCategory(state, data) {
       state.sortCategory = data;
+    },
+    saveSortTag(state, data) {
+      state.sortTag = data;
+    },
+    saveSortNameCategory(state, data) {
+      state.sortNameCategory = data;
     }
   },
   actions: {}

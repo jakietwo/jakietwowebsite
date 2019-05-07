@@ -8,11 +8,15 @@
           :key="index"
         >
           <a-divider orientation="left">
-            <span class="article-title">{{ article.title }}</span>
+            <span @click="routerToArticle(article)" class="article-title">{{
+              article.title
+            }}</span>
             &nbsp; &nbsp; &nbsp;
             <span class="article-time">{{ article.createtime }}</span>
           </a-divider>
-          <div class="article-content">{{ article.content }}</div>
+          <div class="article-content" @click="routerToArticle(article)">
+            {{ article.content }}
+          </div>
           <div class="article-footer">
             <div class="comment">
               <a-icon type="message" />
@@ -23,18 +27,25 @@
             <a-divider type="vertical" />
             <div class="tags">
               <a-icon type="tags" style="margin-right: 5px" />
-              <a-tag color="pink" class="tag">javascript</a-tag>
+              <a-tag
+                color="pink"
+                class="tag"
+                v-for="(tag, index) in sortTag[article.id]"
+                v-bind:key="index"
+                >{{ tag.name }}</a-tag
+              >
             </div>
             <a-divider type="vertical" />
             <div class="category">
               <a-icon type="folder" style="margin-right: 5px" />
               <a-tag
-                v-for="(tag, index) in sortCategory[article.id]"
+                v-for="(category, index) in sortCategory[article.id]"
                 v-bind:key="`class${index}`"
                 :color="`${tagColor[Math.floor(Math.random() * 10)]}`"
                 class="tag"
-                >{{ tag.name }}</a-tag
               >
+                {{ category.name }}
+              </a-tag>
             </div>
           </div>
         </li>
@@ -42,7 +53,7 @@
       <div class="page">
         <a-pagination
           v-model="currentPage"
-          :total="total"
+          :total="totalArticles"
           @change="changePage"
         />
       </div>
@@ -62,14 +73,15 @@ export default {
     return {
       articles: [],
       currentPage: 1,
-      total: 20,
+      totalArticles: 20,
       tagColor: tagColor
     };
   },
   computed: {
     ...mapState({
       sortComment: state => state.sortComment,
-      sortCategory: state => state.sortCategory
+      sortCategory: state => state.sortCategory,
+      sortTag: state => state.sortTag
     })
   },
   watch: {},
@@ -82,10 +94,13 @@ export default {
       console.log("page", page);
       console.log("pageSize", pageSize);
     },
-
+    routerToArticle(article) {
+      console.log("article", article);
+    },
     async _initData() {
       this.articles = await article.getAllArticle();
       this.articles = handleCreateTime(this.articles);
+      this.totalArticles = this.articles.length;
     }
   }
 };

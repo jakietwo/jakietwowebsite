@@ -11,8 +11,15 @@ function transferTimeToLocalTime(date) {
   const day = datetime.getDate();
   const hh = datetime.getHours();
   const mm = datetime.getMinutes();
-  const ss = datetime.getSeconds();
+  // const ss = datetime.getSeconds();
   let result = year + "-" + month + "-" + day + " " + hh + ":" + mm;
   return result;
 }
-export { handleCreateTime };
+function transferDateToYMD(dateTime) {
+  let date = new Date(dateTime);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return year + "-" + month + "-" + day;
+}
+export { handleCreateTime, transferDateToYMD };

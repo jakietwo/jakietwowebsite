@@ -28,13 +28,13 @@
             <a-icon type="tags" />
             分类
           </a-menu-item>
+          <a-menu-item key="myTime">
+            <a-icon type="branches" />
+            时间轴
+          </a-menu-item>
           <a-menu-item key="myabout">
             <a-icon type="man" />
             关于
-          </a-menu-item>
-          <a-menu-item key="my">
-            <a-icon type="mail" />
-            mail
           </a-menu-item>
         </a-menu>
         <a-button class="login" type="primary">登录</a-button>
@@ -55,7 +55,15 @@ export default {
   computed: {},
   watch: {
     current(newval) {
-      this.$store.commit("setCurrentCmp", newval);
+      if (newval[0] === "myhome") {
+        this.$router.push({ name: "articleList" });
+      } else if (newval[0] === "mycategory") {
+        this.$router.push({ name: "category" });
+      } else if (newval[0] === "myTime") {
+        this.$router.push({ name: "timeline" });
+      } else if (newval[0] === "myabout") {
+        this.$router.push({ name: "about" });
+      }
     }
   },
   created() {},
