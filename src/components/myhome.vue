@@ -96,6 +96,10 @@ export default {
     },
     routerToArticle(article) {
       console.log("article", article);
+      this.$store.commit("saveArticleDetail", article);
+      this.$router.push({
+        name: "articledetail"
+      });
     },
     async _initData() {
       this.articles = await article.getAllArticle();
@@ -152,5 +156,6 @@ export default {
       box-shadow 0 0 20px rgba(7,17,27,.3)
   .page
     float right
-    margin-right 40px
+    margin-right 50px
+    margin-bottom 30px
 </style>

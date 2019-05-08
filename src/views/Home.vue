@@ -97,9 +97,8 @@ export default {
     .router-view
       position absolute
       left 420px
-      top 70px
-      width 1000px
-      min-height 600px
-      max-height 1600px
+      top 60px
+      width calc(100vw - 420px)
+      height calc(100vh - 60px)
       overflow-y auto
 </style>

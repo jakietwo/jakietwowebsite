@@ -71,8 +71,9 @@ export default {
 
 <style scoped lang="stylus">
 .myTime
-  margin-top 20px
+  width 100%
   padding-top 20px
+  padding-left 20px
 </style>
 <style>
 .ant-timeline-item-content {

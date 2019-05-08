@@ -20,19 +20,19 @@
       </a-col>
       <a-col :sm="10" :xs="4" class="third-col">
         <a-menu v-model="current" mode="horizontal" class="nav-header">
-          <a-menu-item key="myhome">
+          <a-menu-item key="myhome" @click="routerTo">
             <a-icon type="html5" />
             首页
           </a-menu-item>
-          <a-menu-item key="mycategory">
+          <a-menu-item key="mycategory" @click="routerTo">
             <a-icon type="tags" />
             分类
           </a-menu-item>
-          <a-menu-item key="myTime">
+          <a-menu-item key="myTime" @click="routerTo">
             <a-icon type="branches" />
-            时间轴
+            时间
           </a-menu-item>
-          <a-menu-item key="myabout">
+          <a-menu-item key="myabout" @click="routerTo">
             <a-icon type="man" />
             关于
           </a-menu-item>
@@ -55,23 +55,35 @@ export default {
   computed: {},
   watch: {
     current(newval) {
-      if (newval[0] === "myhome") {
-        this.$router.push({ name: "articleList" });
-      } else if (newval[0] === "mycategory") {
-        this.$router.push({ name: "category" });
-      } else if (newval[0] === "myTime") {
-        this.$router.push({ name: "timeline" });
-      } else if (newval[0] === "myabout") {
-        this.$router.push({ name: "about" });
-      }
+      // if (newval[0] === "myhome") {
+      //   this.$router.push({ name: "articleList" });
+      // } else if (newval[0] === "mycategory") {
+      //   this.$router.push({ name: "category" });
+      // } else if (newval[0] === "myTime") {
+      //   this.$router.push({ name: "timeline" });
+      // } else if (newval[0] === "myabout") {
+      //   this.$router.push({ name: "about" });
+      // }
     }
   },
   created() {},
   mounted() {
-    this.current = this.$store.state.currentCmp;
+    // this.current = this.$store.state.currentCmp;
   },
   methods: {
-    onSearch() {}
+    onSearch() {},
+    routerTo(obj) {
+      let { key } = obj;
+      if (key === "myhome") {
+        this.$router.push({ name: "articleList" });
+      } else if (key === "mycategory") {
+        this.$router.push({ name: "category" });
+      } else if (key === "myTime") {
+        this.$router.push({ name: "timeline" });
+      } else if (key === "myabout") {
+        this.$router.push({ name: "about" });
+      }
+    }
   }
 };
 </script>

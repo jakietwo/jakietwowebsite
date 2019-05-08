@@ -15,7 +15,8 @@ export default new Vuex.Store({
     sortReply: [],
     sortCategory: [],
     sortTag: [],
-    sortNameCategory: []
+    sortNameCategory: [],
+    articleDetail: {}
   },
   plugins: [createPersistedState()],
   mutations: {
@@ -51,6 +52,9 @@ export default new Vuex.Store({
     },
     saveSortNameCategory(state, data) {
       state.sortNameCategory = data;
+    },
+    saveArticleDetail(state, data) {
+      state.articleDetail = data;
     }
   },
   actions: {}

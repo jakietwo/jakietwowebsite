@@ -19,8 +19,16 @@
     <div class="newArticle">
       <a-divider orientation="left">最新文章</a-divider>
       <ul class="newArticleList">
-        <li class="article-item" v-for="(article, index) in 6" :key="index">
-          {{ article }}
+        <li
+          class="article-item"
+          v-for="(article, index) in articles"
+          :key="index"
+        >
+          <a-checkable-tag
+            @click="routerToArticle(article)"
+            style="font-size: 14px;"
+            >{{ article.title }}</a-checkable-tag
+          >
         </li>
       </ul>
     </div>
@@ -44,12 +52,21 @@ export default {
       tags: []
     };
   },
+  computed: {
+    articles() {
+      return this.$store.state.articles;
+    }
+  },
   watch: {},
   created() {
     this.tags = myTags;
   },
   mounted() {},
-  methods: {}
+  methods: {
+    routerToArticle(article) {
+      console.log(article);
+    }
+  }
 };
 </script>
 

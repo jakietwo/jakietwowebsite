@@ -92,7 +92,7 @@ function sortTagByArticleId(tags) {
   });
   return result;
 }
-function sortCategoryByName(category) {}
+
 export {
   sortReplyByCommentId,
   orderByCreateTime,

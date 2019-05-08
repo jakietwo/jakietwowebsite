@@ -15,6 +15,11 @@ export default new Router({
           component: () => import("@/components/myhome")
         },
         {
+          path: "articledetail",
+          name: "articledetail",
+          component: () => import("@/components/articleDetail")
+        },
+        {
           path: "category",
           name: "category",
           component: () => import("@/components/mycategory")
