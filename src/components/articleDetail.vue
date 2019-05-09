@@ -4,7 +4,7 @@
     <div class="article-tag">
       <div class="createTime">
         <a-icon type="form" />
-        <span style="color: rgba(0,0,0,.5);">{{
+        <span style="color: rgba(0,0,0,.5); margin-left: 5px;">{{
           articleDetail.createtime
         }}</span>
       </div>
@@ -41,66 +41,26 @@
         }}
       </div>
     </div>
-    <div class="article-content">
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-      <p>123</p>
-    </div>
+    <div class="article-content" v-html="articleDetail.content"></div>
+    <ul class="comment-list">
+      <a-comment>
+        <template slot="actions">
+          <span>Reply to</span>
+        </template>
+        <a slot="author">Han Solo</a>
+        <a-avatar
+          src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+          alt="Han Solo"
+          slot="avatar"
+        />
+        <p slot="content">
+          <span style="line-height: 24px;" v-html="commentContent"></span>
+        </p>
+        <a-tooltip slot="datetime" :title="2019 - 1 - 12">
+          <span>{{ 123123 }}</span>
+        </a-tooltip>
+      </a-comment>
+    </ul>
   </div>
 </template>
 <script>
@@ -113,7 +73,10 @@ export default {
   components: {},
   data() {
     return {
-      tagColor: tagColor
+      tagColor: tagColor,
+      commentContent:
+        " We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create\n" +
+        "          their product prototypes beautifully and efficiently."
     };
   },
   computed: {
@@ -164,4 +127,7 @@ export default {
   .article-content
     margin-top 20px
     width 100%
+  .comment-list
+    width 100%
+    text-align left
 </style>
