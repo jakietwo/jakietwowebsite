@@ -43,7 +43,7 @@
     </div>
     <div class="article-content" v-html="articleDetail.content"></div>
     <ul class="comment-list">
-      <a-comment>
+      <a-comment v-for="(item, index) in sortComment[articleDetail.id]">
         <template slot="actions">
           <span>Reply to</span>
         </template>
@@ -89,10 +89,19 @@ export default {
       sortTag: state => state.sortTag
     })
   },
-  watch: {},
+  watch: {
+    sortComment: {
+      handler(newval) {
+        this.getAllUserNameInComment(newval);
+      },
+      immediate: true
+    }
+  },
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    getAllUserNameInComment() {}
+  }
 };
 </script>
 
