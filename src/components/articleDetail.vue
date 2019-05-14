@@ -43,18 +43,18 @@
     </div>
     <div class="article-content" v-html="articleDetail.content"></div>
     <ul class="comment-list">
-      <a-comment v-for="(item, index) in sortComment[articleDetail.id]">
+      <a-comment v-for="(item, index) in comments" v-bind:key="`index${index}`">
         <template slot="actions">
           <span>Reply to</span>
         </template>
-        <a slot="author">Han Solo</a>
+        <a slot="author">{{ item.username }}</a>
         <a-avatar
           src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
           alt="Han Solo"
           slot="avatar"
         />
         <p slot="content">
-          <span style="line-height: 24px;" v-html="commentContent"></span>
+          <span style="line-height: 24px;" v-html="item.content"></span>
         </p>
         <a-tooltip slot="datetime" :title="2019 - 1 - 12">
           <span>{{ 123123 }}</span>
@@ -64,6 +64,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 import { mapState } from "vuex";
 import { tagColor } from "../config/tagColor";
 import { transferDateToYMD } from "../common/handleTime";
@@ -76,7 +77,8 @@ export default {
       tagColor: tagColor,
       commentContent:
         " We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create\n" +
-        "          their product prototypes beautifully and efficiently."
+        "          their product prototypes beautifully and efficiently.",
+      comments: []
     };
   },
   computed: {
@@ -92,15 +94,30 @@ export default {
   watch: {
     sortComment: {
       handler(newval) {
-        this.getAllUserNameInComment(newval);
+        if (Object.keys(newval).length) {
+          this.getAllUserNameInComment();
+        }
       },
       immediate: true
     }
   },
   created() {},
-  mounted() {},
+  mounted() {
+    let articleComment = this.sortComment[this.articleDetail.id];
+    this.comments = articleComment;
+  },
   methods: {
-    getAllUserNameInComment() {}
+    getAllUserNameInComment() {
+      this.sortComment[this.articleDetail.id].forEach(async item => {
+        let response = await axios.get("/api/v1/users/" + item.userId);
+        console.log("res", response);
+        let res = response.data;
+        if (res.id) {
+          item.username = res.username;
+          item.auth = res.auth;
+        }
+      });
+    }
   }
 };
 </script>
