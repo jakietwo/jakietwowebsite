@@ -16,7 +16,8 @@ export default new Vuex.Store({
     sortCategory: [],
     sortTag: [],
     sortNameCategory: [],
-    articleDetail: {}
+    articleDetail: {},
+    allUsers: []
   },
   plugins: [createPersistedState()],
   mutations: {
@@ -55,6 +56,9 @@ export default new Vuex.Store({
     },
     saveArticleDetail(state, data) {
       state.articleDetail = data;
+    },
+    saveAllUsers(state, data) {
+      state.allUsers = data;
     }
   },
   actions: {}

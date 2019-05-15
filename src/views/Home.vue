@@ -17,6 +17,7 @@ import { tag } from "../api/tag";
 import { comment } from "../api/comment";
 import { reply } from "../api/reply";
 import { category } from "../api/category";
+import { listAllUsers } from "../api/user";
 import {
   sortReplyByCommentId,
   orderByCreateTime,
@@ -51,11 +52,15 @@ export default {
       let replys = await reply.getAllReply();
       let tags = await tag.getAllTags();
       let categorys = await category.listCategory();
+      let users = await listAllUsers();
+      this.$store.commit("saveAllUsers", users);
       this.$store.commit("saveArticles", articles);
       this.$store.commit("saveComments", comments);
       this.$store.commit("saveReplys", replys);
       this.$store.commit("saveTags", tags);
       this.$store.commit("saveCategorys", categorys);
+      // 对replys 增加用户名
+      replys = this.addUserNameInReplys(replys, users);
       let sortReply = sortReplyByCommentId(replys);
       sortReply = orderByCreateTime(sortReply);
       let sortComment = sortCommentByArticleId(comments);
@@ -69,6 +74,17 @@ export default {
       this.$store.commit("saveSortComment", sortComment);
       this.$store.commit("saveSortReply", sortReply);
       this.$store.commit("saveSortCategory", sortCategory);
+    },
+    addUserNameInReplys(replys, users) {
+      for (let i = 0, j = replys.length; i < j; i++) {
+        reply: for (let n = 0, m = users.length; n < m; n++) {
+          if (replys[i].userId === users[n].id) {
+            replys[i].username = users[n].username;
+            break reply;
+          }
+        }
+      }
+      return replys;
     }
   }
 };

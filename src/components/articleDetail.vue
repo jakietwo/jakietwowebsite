@@ -42,24 +42,112 @@
       </div>
     </div>
     <div class="article-content" v-html="articleDetail.content"></div>
+
     <ul class="comment-list">
-      <a-comment v-for="(item, index) in comments" v-bind:key="`index${index}`">
-        <template slot="actions">
-          <span>Reply to</span>
-        </template>
-        <a slot="author">{{ item.username }}</a>
+      <a-comment
+        v-for="(comment, index) in comments"
+        v-bind:key="`index${index}`"
+      >
+        <span slot="actions" @click="showCommentArea(index)">Reply to</span>
+        <a slot="author">{{ comment.username }}</a>
         <a-avatar
+          slot="avatar"
           src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
           alt="Han Solo"
-          slot="avatar"
         />
         <p slot="content">
-          <span style="line-height: 24px;" v-html="item.content"></span>
+          {{ comment.content }}
         </p>
-        <a-tooltip slot="datetime" :title="2019 - 1 - 12">
-          <span>{{ 123123 }}</span>
-        </a-tooltip>
+        <a-comment v-if="showComment[index]">
+          <a slot="author">Han Solo</a>
+          <a-avatar
+            slot="avatar"
+            src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+            alt="Han Solo"
+          />
+          <div slot="content">
+            <a-form-item>
+              <a-textarea
+                :rows="4"
+                @change="handleChange"
+                placeholder="输入评论..."
+                :value="value"
+              ></a-textarea>
+            </a-form-item>
+            <a-form-item>
+              <a-button
+                htmlType="submit"
+                :loading="submitting"
+                @click="handleSubmit"
+                type="primary"
+              >
+                评论
+              </a-button>
+            </a-form-item>
+          </div>
+        </a-comment>
+        <a-comment
+          v-for="(reply, index1) in sortReply[comment.id]"
+          v-bind:key="`index${index1}`"
+        >
+          <span slot="actions">Reply to</span>
+          <a slot="author">{{ reply.username }}</a>
+          <a-avatar
+            slot="avatar"
+            src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+            alt="Han Solo"
+          />
+          <div slot="content">
+            {{ reply.content }}
+          </div>
+          <a-comment>
+            <span slot="actions">Reply to</span>
+            <a slot="author">Han Solo</a>
+            <a-avatar
+              slot="avatar"
+              src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+              alt="Han Solo"
+            />
+            <div slot="content">
+              <a-form-item>
+                <a-textarea
+                  :rows="4"
+                  @change="handleChange"
+                  :value="value"
+                ></a-textarea>
+              </a-form-item>
+              <a-form-item>
+                <a-button
+                  htmlType="submit"
+                  :loading="submitting"
+                  @click="handleSubmit"
+                  type="primary"
+                >
+                  Add Comment
+                </a-button>
+              </a-form-item>
+            </div>
+          </a-comment>
+        </a-comment>
       </a-comment>
+
+      <!--<a-comment v-for="(item, index) in comments" v-bind:key="`index${index}`">-->
+      <!--<template slot="actions">-->
+      <!--<span>Reply to</span>-->
+      <!--</template>-->
+      <!--<a slot="author">{{ item.username }}</a>-->
+      <!--<a-avatar-->
+      <!--src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"-->
+      <!--alt="Han Solo"-->
+      <!--slot="avatar"-->
+      <!--/>-->
+      <!--<p slot="content">-->
+      <!--<span style="line-height: 24px;" v-html="item.content"></span>-->
+      <!--</p>-->
+      <!--<a-tooltip slot="datetime" :title="2019 - 1 - 12">-->
+      <!--<span>{{ 123123 }}</span>-->
+      <!--</a-tooltip>-->
+      <!--</a-comment>-->
     </ul>
   </div>
 </template>
@@ -78,7 +166,12 @@ export default {
       commentContent:
         " We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create\n" +
         "          their product prototypes beautifully and efficiently.",
-      comments: []
+      comments: [],
+      replys: [],
+      showComment: {},
+      showReplyText: {},
+      value: "",
+      submitting: false
     };
   },
   computed: {
@@ -88,7 +181,9 @@ export default {
     ...mapState({
       sortComment: state => state.sortComment,
       sortCategory: state => state.sortCategory,
-      sortTag: state => state.sortTag
+      sortReply: state => state.sortReply,
+      sortTag: state => state.sortTag,
+      allUsers: state => state.allUsers
     })
   },
   watch: {
@@ -105,8 +200,19 @@ export default {
   mounted() {
     let articleComment = this.sortComment[this.articleDetail.id];
     this.comments = articleComment;
+    this.comments.forEach((comment, index) => {
+      this.$set(this.showComment, index, false);
+    });
+    console.log("showComment", this.showComment);
+    this.replys = this.handleReplysInComment(this.comments, this.replys);
   },
   methods: {
+    handleSubmit() {},
+    handleChange() {},
+    showCommentArea(index) {
+      this.$set(this.showComment, index, !this.showComment[index]);
+    },
+    handleReplysInComment(comments, replys) {},
     getAllUserNameInComment() {
       this.sortComment[this.articleDetail.id].forEach(async item => {
         let response = await axios.get("/api/v1/users/" + item.userId);
