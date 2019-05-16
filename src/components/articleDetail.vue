@@ -210,7 +210,13 @@ export default {
     handleSubmit() {},
     handleChange() {},
     showCommentArea(index) {
-      this.$set(this.showComment, index, !this.showComment[index]);
+      for (let item in this.showComment) {
+        if (index == item) {
+          this.$set(this.showComment, item, true);
+        } else {
+          this.$set(this.showComment, item, false);
+        }
+      }
     },
     handleReplysInComment(comments, replys) {},
     getAllUserNameInComment() {
