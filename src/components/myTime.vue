@@ -41,6 +41,10 @@ export default {
   methods: {
     routerToArticle(article) {
       console.log(article);
+      this.$store.commit("saveArticleDetail", article);
+      this.$router.push({
+        name: "articledetail"
+      });
     },
     /**
      *

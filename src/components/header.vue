@@ -37,22 +37,160 @@
             关于
           </a-menu-item>
         </a-menu>
-        <a-button class="login" type="primary">登录</a-button>
-        <a-button class="register">注册</a-button>
+        <a-button
+          class="login"
+          type="primary"
+          v-if="!token"
+          @click="showLoginModal"
+          >登录</a-button
+        >
+        <a-button class="register" v-if="!token" @click="signVisible = true"
+          >注册</a-button
+        >
+        <span v-if="token" style="margin-left: 10px;">{{ username }}</span>
+        <a-button
+          class="register"
+          v-if="token"
+          style="margin-left: 10px;"
+          @click="logout"
+          >退出</a-button
+        >
       </a-col>
     </a-row>
+    <!-- 登录框-->
+    <a-modal title="登录" v-model="visible">
+      <a-form :form="form" @submit="handleSubmit">
+        <a-form-item
+          label="username"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 12 }"
+        >
+          <a-input
+            v-decorator="[
+              'username',
+              {
+                rules: [
+                  { required: true, message: 'Please input your username!' }
+                ]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
+          label="password"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 12 }"
+        >
+          <a-input
+            type="password"
+            v-decorator="[
+              'password',
+              {
+                rules: [
+                  { required: true, message: 'Please input your password!' }
+                ]
+              }
+            ]"
+          />
+        </a-form-item>
+      </a-form>
+      <template slot="footer" style="padding-right: 50px;text-align: center;">
+        <a-button
+          key="back"
+          @click="visible = false"
+          style="width: 120px;height: 40px"
+          >取消</a-button
+        >
+        <a-button
+          key="submit"
+          type="primary"
+          @click="login"
+          style="margin-right: 30%; width: 120px ;height: 40px;"
+        >
+          登录
+        </a-button>
+      </template>
+    </a-modal>
+    <!-- 注册框-->
+    <a-modal title="注册" v-model="signVisible">
+      <a-form :form="signForm">
+        <a-form-item
+          label="username"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 12 }"
+        >
+          <a-input
+            v-decorator="[
+              'username',
+              {
+                rules: [
+                  { required: true, message: 'Please input your username!' }
+                ]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
+          label="password"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 12 }"
+        >
+          <a-input
+            type="password"
+            v-decorator="[
+              'password',
+              {
+                rules: [
+                  { required: true, message: 'Please input your password!' }
+                ]
+              }
+            ]"
+          />
+        </a-form-item>
+      </a-form>
+      <template slot="footer" style="padding-right: 50px;text-align: center;">
+        <a-button
+          key="back"
+          @click="signVisible = false"
+          style="width: 120px;height: 40px"
+          >取消</a-button
+        >
+        <a-button
+          key="submit"
+          type="primary"
+          @click="sign"
+          style="margin-right: 30%; width: 120px ;height: 40px;"
+        >
+          注册
+        </a-button>
+      </template>
+    </a-modal>
   </div>
 </template>
 <script>
+import md5 from "js-md5";
+import { mapState } from "vuex";
+import { login, register } from "../api/user";
+
 export default {
   name: "myheader",
   components: {},
   data() {
     return {
-      current: ["myhome"]
+      current: ["myhome"],
+      visible: false,
+      signVisible: false,
+      formLayout: "horizontal",
+      form: this.$form.createForm(this),
+      signForm: this.$form.createForm(this)
     };
   },
-  computed: {},
+  computed: {
+    ...mapState({
+      token: state => state.token,
+      username: state => state.username
+    })
+  },
   watch: {
     current(newval) {
       // if (newval[0] === "myhome") {
@@ -71,6 +209,82 @@ export default {
     // this.current = this.$store.state.currentCmp;
   },
   methods: {
+    // 显示登录
+    showLoginModal() {
+      this.visible = true;
+    },
+    login() {
+      this.form.validateFields(async (err, values) => {
+        if (!err) {
+          values.password = md5(values.password);
+          // 登录
+          let response = await login(values);
+          if (response.success) {
+            this.$notification.success({
+              message: "登录成功"
+            });
+            this.visible = false;
+            this.$store.commit("saveToken", response.token);
+            this.$store.commit("saveUsername", values.username);
+          } else {
+            this.$notification.error({
+              message: "登录失败",
+              description: response.message
+            });
+          }
+        }
+      });
+    },
+    // 注册
+    sign() {
+      let that = this;
+      this.signForm.validateFields(async (err, values) => {
+        if (!err) {
+          values.password = md5(values.password);
+          console.log("values", values);
+          // 注册
+          let response = await register(values);
+          if (response.success) {
+            this.$notification.success({
+              message: "注册成功"
+            });
+            that.signVisible = false;
+          } else {
+            this.$notification.error({
+              message: "注册失败",
+              description: response.message
+            });
+          }
+        }
+      });
+    },
+    /**
+     *  退出
+     */
+    logout() {
+      let that = this;
+      this.$confirm({
+        title: `确定退出当前账户${this.username}吗?`,
+        content: "退出当前账号你将无法评论",
+        onOk() {
+          that.$store.commit("saveToken", "");
+          that.$store.commit("saveUsername", "");
+        },
+        onCancel() {}
+      });
+    },
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+        }
+      });
+    },
+    handleSelectChange(value) {
+      this.form.setFieldsValue({
+        note: `Hi, ${value === "male" ? "man" : "lady"}!`
+      });
+    },
     onSearch() {},
     routerTo(obj) {
       let { key } = obj;

@@ -210,6 +210,7 @@ export default {
     handleSubmit() {},
     handleChange() {},
     showCommentArea(index) {
+      console.log("index", index);
       for (let item in this.showComment) {
         if (index == item) {
           this.$set(this.showComment, item, true);
@@ -222,7 +223,6 @@ export default {
     getAllUserNameInComment() {
       this.sortComment[this.articleDetail.id].forEach(async item => {
         let response = await axios.get("/api/v1/users/" + item.userId);
-        console.log("res", response);
         let res = response.data;
         if (res.id) {
           item.username = res.username;

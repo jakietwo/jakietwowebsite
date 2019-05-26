@@ -118,6 +118,7 @@ export default {
     margin 20px auto 50px
     height 320px
     border 1px solid rgba(0,0,0,.05)
+    cursor pointer
     padding  20px 20px 10px
     transition  all .3s
     .article-title
