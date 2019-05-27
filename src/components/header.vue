@@ -59,7 +59,7 @@
     </a-row>
     <!-- 登录框-->
     <a-modal title="登录" v-model="visible">
-      <a-form :form="form" @submit="handleSubmit">
+      <a-form :form="form" @submit="handleSubmit" v-on:keyup.enter="login">
         <a-form-item
           label="username"
           :label-col="{ span: 5 }"
@@ -113,7 +113,7 @@
     </a-modal>
     <!-- 注册框-->
     <a-modal title="注册" v-model="signVisible">
-      <a-form :form="signForm">
+      <a-form :form="signForm" v-on:keyup.enter="sign">
         <a-form-item
           label="username"
           :label-col="{ span: 5 }"
@@ -188,7 +188,8 @@ export default {
   computed: {
     ...mapState({
       token: state => state.token,
-      username: state => state.username
+      username: state => state.username,
+      allUsers: state => state.allUsers
     })
   },
   watch: {
@@ -226,6 +227,11 @@ export default {
             this.visible = false;
             this.$store.commit("saveToken", response.token);
             this.$store.commit("saveUsername", values.username);
+            this.allUsers.forEach(user => {
+              if (user.username === values.username) {
+                this.$store.commit("saveUserId", user.id);
+              }
+            });
           } else {
             this.$notification.error({
               message: "登录失败",
@@ -269,6 +275,7 @@ export default {
         onOk() {
           that.$store.commit("saveToken", "");
           that.$store.commit("saveUsername", "");
+          that.$store.commit("saveUserId", "");
         },
         onCancel() {}
       });

@@ -16,6 +16,10 @@ class Comment {
     console.log("result");
     return comments;
   }
+  async createComment(data) {
+    let response = await axios.post("/api/v1/comments", data);
+    return response.data;
+  }
 }
 
 const comment = new Comment();

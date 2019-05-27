@@ -12,6 +12,7 @@
 // @ is an alias to /src
 import navheader from "@/components/header";
 import myIntro from "@/components/myIntro";
+import axios from "axios";
 import { article } from "../api/article";
 import { tag } from "../api/tag";
 import { comment } from "../api/comment";
@@ -38,6 +39,19 @@ export default {
   computed: {
     currentCmp() {
       return this.$store.state.currentCmp[0];
+    },
+    token() {
+      return this.$store.state.token;
+    }
+  },
+  watch: {
+    token: {
+      handler(newval) {
+        if (newval) {
+          axios.defaults.headers.common["Authorization"] = "beaker " + newval;
+        }
+      },
+      immediate: true
     }
   },
   created() {

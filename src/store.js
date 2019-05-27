@@ -19,7 +19,8 @@ export default new Vuex.Store({
     articleDetail: {},
     allUsers: [],
     username: "",
-    token: ""
+    token: "",
+    userId: ""
   },
   plugins: [createPersistedState()],
   mutations: {
@@ -67,6 +68,9 @@ export default new Vuex.Store({
     },
     saveToken(state, data) {
       state.token = data;
+    },
+    saveUserId(state, data) {
+      state.userId = data;
     }
   },
   actions: {}
