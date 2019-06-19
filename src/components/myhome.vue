@@ -14,9 +14,11 @@
             &nbsp; &nbsp; &nbsp;
             <span class="article-time">{{ article.createtime }}</span>
           </a-divider>
-          <div class="article-content" @click="routerToArticle(article)">
-            {{ article.content }}
-          </div>
+          <div
+            class="article-content"
+            @click="routerToArticle(article)"
+            v-html="JSON.parse(article.content)"
+          ></div>
           <div class="article-footer">
             <div class="comment">
               <a-icon type="message" />

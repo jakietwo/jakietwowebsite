@@ -43,7 +43,9 @@
             }}
           </div>
         </div>
-        <div class="article-content" v-html="articleDetail.content"></div>
+        <div class="article-content">
+          <pre v-html="articleDetail.content" class="article-pre"></pre>
+        </div>
         <h4 style="float: left; margin: 20px 0; ">
           <span style="color: rgb(24,144,255); font-size: 18px;">
             {{ allCommentCount }}
@@ -229,7 +231,8 @@ export default {
       commentValue: "",
       submitting: false,
       allComment: {},
-      allCommentCount: 0
+      allCommentCount: 0,
+      content: "#### how to use mavonEditor in nuxt.js"
     };
   },
   computed: {
@@ -257,6 +260,13 @@ export default {
       },
       immediate: true,
       deep: true
+    },
+    articleDetail: {
+      handler(newval) {
+        if (!newval) return;
+        newval.content = JSON.parse(newval.content);
+      },
+      immediate: true
     },
     sortReply: {
       handler() {
@@ -434,8 +444,20 @@ export default {
         position relative
         bottom 2px
   .article-content
+    text-align left
     margin-top 20px
     width 100%
+    .article-pre
+      color #555
+      line-height 2
+      h1
+        padding-top 10px
+        border-bottom 1px solid #eee
+        margin 20px 0 10px
+        font-weight 700
+        line-height 1.5
+        font-family  Lato,PingFang SC,Microsoft YaHei,sans-serif
+
   .comment-list
     width 100%
     text-align left
