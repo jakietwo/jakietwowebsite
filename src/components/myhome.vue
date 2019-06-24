@@ -17,7 +17,7 @@
           <div
             class="article-content"
             @click="routerToArticle(article)"
-            v-html="JSON.parse(article.content)"
+            v-html="article.articleContent"
           ></div>
           <div class="article-footer">
             <div class="comment">
@@ -63,11 +63,14 @@
   </div>
 </template>
 <script>
+import marked from "marked";
+import hljs from "highlight.js";
+import javascript from "highlight.js/lib/languages/javascript";
+import "highlight.js/styles/monokai-sublime.css";
 import { article } from "../api/article";
 import { handleCreateTime } from "../common/handleTime";
 import { mapState } from "vuex";
 import { tagColor } from "../config/tagColor";
-
 export default {
   name: "myhome",
   components: {},
@@ -88,6 +91,7 @@ export default {
   },
   watch: {},
   created() {
+    this.setMarkerDown();
     this._initData();
   },
   mounted() {},
@@ -103,9 +107,32 @@ export default {
         name: "articledetail"
       });
     },
+    handleMarkedContent(articles) {
+      articles.forEach(article => {
+        article.articleContent = marked(JSON.parse(article.content));
+      });
+      return articles;
+    },
+    setMarkerDown() {
+      marked.setOptions({
+        renderer: new marked.Renderer(),
+        highlight: function(code) {
+          return hljs.highlightAuto(code).value;
+        },
+        pedantic: false,
+        gfm: true,
+        tables: true,
+        breaks: false,
+        sanitize: false,
+        smartLists: true,
+        smartypants: false,
+        xhtml: false
+      });
+    },
     async _initData() {
       this.articles = await article.getAllArticle();
       this.articles = handleCreateTime(this.articles);
+      this.articles = this.handleMarkedContent(this.articles);
       this.totalArticles = this.articles.length;
     }
   }
@@ -137,6 +164,9 @@ export default {
       width 100%
       height 200px
       overflow hidden
+      & h1
+        font-size 20px;
+        height 30px;
     .article-footer
       display flex
       height 30px
@@ -161,4 +191,71 @@ export default {
     float right
     margin-right 50px
     margin-bottom 30px
+
+  pre{
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    overflow: auto;
+    word-break: break-all;
+    word-wrap: break-word;
+  }
+  .article-content >>> h1 {
+    height 45px;
+    margin 20px 0;
+    font-weight 700;
+    font-size 30px;
+    line-height 45px;
+    word-break break-word;
+  }
+  .article-content >>> h2 {
+    border-bottom 1px solid rgb(236,236,236)
+    color rgb(51,51,51);
+    font-size 24px;
+    line-height 36px
+    height 36px
+    margin-top 35px;
+    padding-bottom 12px
+    word-break break-word
+  }
+  .article-content >>> h3 {
+    color rgb(51,51,51);
+    font-size 18px;
+    line-height 27px
+    font-weight 700
+    margin-top 35px;
+    padding-bottom 0
+    word-break break-word
+  }
+  .article-content >>> h4 {
+    color rgb(51,51,51);
+    font-size 16px;
+    line-height 24px
+    font-weight 700
+    margin-top 0;
+    margin-bottom 10px;
+    padding-bottom 5px
+    word-break break-word
+  }
+  .article-content >>> p{
+    color rgb(51,51,51)
+    font-size 15px
+    font-weight 400
+    line-height 26px
+    margin-top 22px
+    word-break break-word;
+  }
+  .article-content >>> pre{
+    color rgb(51,51,51)
+    font-size 15px
+    font-weight 400
+    margin 15px 0
+    overflow auto
+    position relative
+    white-space pre
+    line-height 26px
+    word-break break-word
+    background-color rgb(248,248,248)
+  }
 </style>

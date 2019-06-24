@@ -43,8 +43,23 @@
             }}
           </div>
         </div>
-        <div class="article-content">
-          <pre v-html="articleDetail.content" class="article-pre"></pre>
+        <div
+          class="article-content"
+          id="article-content"
+          v-html="articleDetail.content"
+        >
+          <!--<mavon-editor-->
+          <!--:value="articleDetail.content"-->
+          <!--:subfield="prop.subfield"-->
+          <!--:defaultOpen="prop.defaultOpen"-->
+          <!--:toolbarsFlag="prop.toolbarsFlag"-->
+          <!--:editable="prop.editable"-->
+          <!--codeStyle="atelier-cave-light"-->
+          <!--:boxShadow="false"-->
+          <!--:scrollStyle="prop.scrollStyle"-->
+          <!--&gt;-->
+          <!--</mavon-editor>-->
+          <!--<pre v-html="content" class="article-pre"></pre>-->
         </div>
         <h4 style="float: left; margin: 20px 0; ">
           <span style="color: rgb(24,144,255); font-size: 18px;">
@@ -199,7 +214,19 @@
           <!--</a-comment>-->
         </ul>
       </a-col>
-      <a-col :span="8">col-12</a-col>
+      <a-col :span="8" style="display: flex; justify-content: center;">
+        <a-anchor
+          :affix="true"
+          style="width: 100px; margin-top: 3%; position: fixed;"
+        >
+          <a-anchor-link
+            v-for="(item, index5) in anchor"
+            :key="index5"
+            :href="`#${item.link}`"
+            :title="item.name"
+          ></a-anchor-link>
+        </a-anchor>
+      </a-col>
     </a-row>
   </div>
 </template>
@@ -212,11 +239,12 @@ import { mapState } from "vuex";
 import { tagColor } from "../config/tagColor";
 import { comment } from "../api/comment";
 import { reply } from "../api/reply";
-
+import marked from "marked";
+import AAnchorLink from "ant-design-vue/es/anchor/AnchorLink";
 dayjs.extend(relativeTime);
 export default {
   name: "articledetail",
-  components: {},
+  components: { AAnchorLink },
   data() {
     return {
       tagColor: tagColor,
@@ -232,7 +260,16 @@ export default {
       submitting: false,
       allComment: {},
       allCommentCount: 0,
-      content: "#### how to use mavonEditor in nuxt.js"
+      content:
+        '"# 一级标题\\nmkj jwq oiqpwke q w\\n# 一级标题\\nmqlwkejk qkwe plqw\' e\\n```javascript\\nlet a = 1;\\nlet b = 2;\\n```\\n"',
+      prop: {
+        subfield: false, // 单双栏模式
+        defaultOpen: "preview", //edit： 默认展示编辑区域 ， preview： 默认展示预览区域
+        editable: false,
+        toolbarsFlag: false,
+        scrollStyle: true
+      },
+      anchor: []
     };
   },
   computed: {
@@ -276,10 +313,31 @@ export default {
       deep: true
     }
   },
-  created() {},
+  created() {
+    // marked.setOptions({
+    //   renderer: new marked.Renderer(),
+    //   highlight: code => {
+    //     return this.hljs.highlightAuto(code).value;
+    //   },
+    //   pedantic: false,
+    //   gfm: true,
+    //   tables: true,
+    //   breaks: false,
+    //   sanitize: false,
+    //   smartLists: true,
+    //   smartypants: false,
+    //   xhtml: false
+    // });
+    this.content = marked(JSON.parse(this.content));
+  },
   mounted() {
     this._initData();
-
+    this.$nextTick().then(() => {
+      let parent = document.getElementById("article-content");
+      this._getNodeDataId(parent, this.anchor);
+      console.log("this.anchor", this.anchor);
+    });
+    // this.articleDetail.content = marked(this.articleDetail.content);
     // this.replys.forEach(reply => {
     //   this.$set(this.showComment, reply.id, false);
     // });
@@ -410,6 +468,40 @@ export default {
         });
       }
       this.allCommentCount = Object.keys(this.showComment).length;
+    },
+    _getNodeDataId(parent, anchor) {
+      let childrens = parent.children;
+      let length = childrens.length;
+      for (let i = 0; i < length; i++) {
+        let node = childrens[i];
+        console.log("node", node);
+        let domName = node.tagName;
+        if (
+          domName === "H1" ||
+          domName === "H2" ||
+          domName === "H3" ||
+          domName === "H4" ||
+          domName === "H5"
+        ) {
+          let obj = {
+            children: [],
+            name: "",
+            link: ""
+          };
+          if (node.hasAttribute("id")) {
+            obj.name = node.innerText;
+            obj.link = node.innerText;
+          } else {
+            let firstChild = node.firstChild;
+            obj.name = node.innerText;
+            obj.link = firstChild.getAttribute("id");
+          }
+          anchor.push(obj);
+          if (node.children) {
+            this._getNodeDataId(node, obj.children);
+          }
+        }
+      }
     }
   }
 };
@@ -419,11 +511,12 @@ export default {
 .articledetail
   text-align center
   .article-detail-title
-    margin-top 20px
-    font-size 20px
-    font-weight 400
-    letter-spacing 1px
-    color #333
+    height 45px;
+    margin 20px 0;
+    font-weight 700;
+    font-size 30px;
+    line-height 45px;
+    word-break break-word;
   .article-tag
     display flex
     margin-top 20px
@@ -461,4 +554,61 @@ export default {
   .comment-list
     width 100%
     text-align left
+  .article-content >>> h1 {
+    height 45px;
+    margin 20px 0;
+    font-weight 700;
+    font-size 30px;
+    line-height 45px;
+    word-break break-word;
+  }
+  .article-content >>> h2 {
+    border-bottom 1px solid rgb(236,236,236)
+    color rgb(51,51,51);
+    font-size 24px;
+    line-height 36px
+    height 36px
+    margin-top 35px;
+    padding-bottom 12px
+    word-break break-word
+  }
+  .article-content >>> h3 {
+    color rgb(51,51,51);
+    font-size 18px;
+    line-height 27px
+    font-weight 700
+    margin-top 35px;
+    padding-bottom 0
+    word-break break-word
+  }
+  .article-content >>> h4 {
+    color rgb(51,51,51);
+    font-size 16px;
+    line-height 24px
+    font-weight 700
+    margin-top 0;
+    margin-bottom 10px;
+    padding-bottom 5px
+    word-break break-word
+  }
+  .article-content >>> p{
+    color rgb(51,51,51)
+    font-size 15px
+    font-weight 400
+    line-height 26px
+    margin-top 22px
+    word-break break-word;
+  }
+  .article-content >>> pre{
+    color rgb(51,51,51)
+    font-size 15px
+    font-weight 400
+    margin 15px 0
+    overflow auto
+    position relative
+    white-space pre
+    line-height 26px
+    word-break break-word
+    background-color rgb(248,248,248)
+  }
 </style>
