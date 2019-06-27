@@ -217,14 +217,30 @@
       <a-col :span="8" style="display: flex; justify-content: center;">
         <a-anchor
           :affix="true"
-          style="width: 100px; margin-top: 3%; position: fixed;"
+          style="width: 150px; margin-top: 3%; position: fixed;"
         >
           <a-anchor-link
             v-for="(item, index5) in anchor"
             :key="index5"
             :href="`#${item.link}`"
             :title="item.name"
-          ></a-anchor-link>
+          >
+            <a-anchor-link
+              v-for="(item1, index6) in item[1]"
+              :key="index6"
+              :href="`#${item1.link}`"
+              :title="item1.name"
+            >
+              <a-anchor-link
+                v-for="(item2, index7) in item[2]"
+                :key="index7"
+                v-if="item2.pid === item1.name"
+                :href="`#${item2.link}`"
+                :title="item2.name"
+              >
+              </a-anchor-link>
+            </a-anchor-link>
+          </a-anchor-link>
         </a-anchor>
       </a-col>
     </a-row>
@@ -269,7 +285,9 @@ export default {
         toolbarsFlag: false,
         scrollStyle: true
       },
-      anchor: []
+      anchor: [],
+      anchorHelp: [], //辅助描点的数组
+      indexNum: 0 // 标志位 记录描点所在索引
     };
   },
   computed: {
@@ -483,23 +501,115 @@ export default {
           domName === "H4" ||
           domName === "H5"
         ) {
-          let obj = {
-            children: [],
-            name: "",
-            link: ""
-          };
-          if (node.hasAttribute("id")) {
-            obj.name = node.innerText;
-            obj.link = node.innerText;
+          let name = parseInt(domName.slice(1));
+          if (!this.anchorHelp.length) {
+            this.anchorHelp.push(name);
+            let obj = {
+              name: "",
+              link: ""
+            };
+            if (node.hasAttribute("id")) {
+              obj.name = node.innerText;
+              obj.link = node.innerText;
+            } else {
+              let firstChild = node.firstChild;
+              obj.name = node.innerText;
+              obj.link = firstChild.getAttribute("id");
+            }
+            anchor.push(obj);
           } else {
-            let firstChild = node.firstChild;
-            obj.name = node.innerText;
-            obj.link = firstChild.getAttribute("id");
+            let length1 = this.anchorHelp.length;
+            if (name > this.anchorHelp[length1 - 1]) {
+              this.anchorHelp.push(name);
+              let obj = {
+                name: "",
+                link: "",
+                pid: ""
+              };
+              if (length1 === 1) {
+                obj.pid = anchor[this.indexNum].name;
+              } else {
+                let pData = anchor[this.indexNum][length1 - 1];
+                let pid = pData[pData.length - 1].name;
+                obj.pid = pid;
+              }
+              if (node.hasAttribute("id")) {
+                obj.name = node.innerText;
+                obj.link = node.innerText;
+              } else {
+                let firstChild = node.firstChild;
+                obj.name = node.innerText;
+                obj.link = firstChild.getAttribute("id");
+              }
+              let arr = anchor[this.indexNum][length1];
+              if (arr && arr.length) {
+                anchor[this.indexNum][length1].push(obj);
+              } else {
+                anchor[this.indexNum][length1] = [];
+                anchor[this.indexNum][length1].push(obj);
+              }
+            } else if (
+              name <= this.anchorHelp[0] &&
+              this.anchorHelp.length !== 1
+            ) {
+              this.indexNum++;
+              let obj = {
+                name: "",
+                link: ""
+              };
+              if (node.hasAttribute("id")) {
+                obj.name = node.innerText;
+                obj.link = node.innerText;
+              } else {
+                let firstChild = node.firstChild;
+                obj.name = node.innerText;
+                obj.link = firstChild.getAttribute("id");
+              }
+              anchor[this.indexNum] = obj;
+              this.anchorHelp = [name];
+            } else if (
+              name > this.anchorHelp[0] &&
+              name < this.anchorHelp[length1 - 1]
+            ) {
+              let x = this.anchorHelp.indexOf(name);
+              if (x > -1) {
+                this.anchorHelp.splice(++x);
+              } else {
+                this.anchorHelp.push(name);
+                this.anchorHelp.sort((a, b) => {
+                  return a < b;
+                });
+                let y = this.anchorHelp.indexOf(name);
+                this.anchorHelp.splice(++y);
+              }
+              let obj = {
+                name: "",
+                link: ""
+              };
+              if (node.hasAttribute("id")) {
+                obj.name = node.innerText;
+                obj.link = node.innerText;
+              } else {
+                let firstChild = node.firstChild;
+                obj.name = node.innerText;
+                obj.link = firstChild.getAttribute("id");
+              }
+              let index = this.anchorHelp.length - 1;
+              if (
+                anchor[this.indexNum][index] &&
+                anchor[this.indexNum][index].length
+              ) {
+                anchor[this.indexNum][index].push(obj);
+              } else {
+                anchor[this.indexNum][index] = [];
+                anchor[this.indexNum][index].push(obj);
+              }
+            }
           }
-          anchor.push(obj);
-          if (node.children) {
-            this._getNodeDataId(node, obj.children);
-          }
+
+          // if (node.children) {
+          //   this._getNodeDataId(node, obj.children);
+          // }
         }
       }
     }
@@ -610,5 +720,15 @@ export default {
     line-height 26px
     word-break break-word
     background-color rgb(248,248,248)
+  }
+  .article-content >>> li{
+    line-height 30px
+    margin 10px 0
+  }
+  .article-content >>> blockquote{
+    background-color rgb(248,248,248)
+    & p{
+      padding 5px;
+    }
   }
 </style>
