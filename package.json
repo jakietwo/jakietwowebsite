@@ -12,7 +12,7 @@
     "axios": "^0.18.0",
     "core-js": "^2.6.5",
     "dayjs": "^1.8.14",
-    "highlight.js": "^9.15.8",
+    "highlight.js": "^10.4.1",
     "js-md5": "^0.7.3",
     "marked": "^0.6.2",
     "mavon-editor": "^2.7.5",
